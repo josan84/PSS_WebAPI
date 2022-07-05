@@ -2,12 +2,13 @@
 
 namespace Insight.PermissionsDealer
 {
-    public static class PermissionAssistant
+    public class PermissionAssistant : IPermissionAssistant
     {
-        private static RbacRequest x;
-        public static async Task<bool> Allow(RbacRequest requestInput, Uri? url)
+        private RbacRequest _rbacRequest;
+       
+        public async Task<bool> Allow(RbacRequest requestInput, Uri? url)
         {
-            x = requestInput;
+            _rbacRequest = requestInput;
 
             using (var client = new HttpClient())
             {
@@ -22,18 +23,18 @@ namespace Insight.PermissionsDealer
 
                     List<DataSourceResponse>? responseDataItems = JsonSerializer.Deserialize<List<DataSourceResponse>>(dataSourceContent, options);
                     
-                    return responseDataItems.Exists(Match);
+                    return responseDataItems == null ? false : responseDataItems.Exists(Match);
                 }
             }
         }
 
-        private static bool Match(DataSourceResponse obj)
+        private bool Match(DataSourceResponse obj)
         {
-            if (x.Input.Role == obj.Role)
+            if (_rbacRequest.Input.Role == obj.Role)
             {
                 foreach (var p in obj.Permissions)
                 {
-                    if (x.Input.Action == p.Action && x.Input.Resource == p.Resource)
+                    if (_rbacRequest.Input.Action == p.Action && _rbacRequest.Input.Resource == p.Resource)
                         return true;
                 }
             }

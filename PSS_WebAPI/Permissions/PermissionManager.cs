@@ -1,6 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
 using Insight.PermissionsDealer;
 
 namespace PSS_WebAPI.Permissions
@@ -8,9 +6,12 @@ namespace PSS_WebAPI.Permissions
     public class PermissionManager : IPermissionManager
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public PermissionManager(IHttpClientFactory httpClientFactory)
+        private readonly IPermissionAssistant _permissionAssistant;
+
+        public PermissionManager(IHttpClientFactory httpClientFactory, IPermissionAssistant permissionAssistant)
         {
             _httpClientFactory = httpClientFactory;
+            _permissionAssistant = permissionAssistant;
         }
         public async Task<bool> AssertPermissionRequirementAsync(PermissionRequirement permissionRequirement, ClaimsPrincipal claimsPrincipal)
         {
@@ -18,9 +19,6 @@ namespace PSS_WebAPI.Permissions
 
             var roleClaimUri = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
             var userRole = claimsPrincipal.FindFirstValue(roleClaimUri).ToLower() ?? string.Empty;
-
-            var scopeClaimUri = "http://schemas.microsoft.com/identity/claims/scope";
-            var userScope = claimsPrincipal.FindFirstValue(scopeClaimUri).ToLower() ?? string.Empty;
 
             var rbacPermissionRequest = new RbacPermissionRequest
             {
@@ -35,7 +33,7 @@ namespace PSS_WebAPI.Permissions
                 Input = rbacPermissionRequest
             };
 
-            return PermissionAssistant.Allow(rbacRequest, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress).Result;
+            return _permissionAssistant.Allow(rbacRequest, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress).Result;
         }
     }
 }

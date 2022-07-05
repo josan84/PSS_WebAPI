@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
-using PSS_WebAPI.Permissions;
+using System.Net.Http.Headers;
+using Insight.PermissionsDealer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using PSS_WebAPI.Permissions;
 using Swashbuckle.AspNetCore.Filters;
-using System.Net.Http.Headers;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -50,6 +51,8 @@ services.AddSwaggerGen(t =>
 
 services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 services.AddSingleton<IPermissionManager, PermissionManager>();
+services.AddSingleton<IPermissionAssistant, PermissionAssistant>();
+
 services.AddHttpClient("DataSourceRepo", httpClient => httpClient.BaseAddress = new Uri(configuration["PSS_DataSourceRepoUrl"]));
 
 var app = builder.Build();
@@ -90,8 +93,10 @@ app.MapGet("/portfolios", [Authorize(Policy = "Customers")] () =>
 app.MapGet("/scopes", [Authorize(Policy = "Customers")]
 async () =>
 {
-    var httpClient = new HttpClient();
-    httpClient.BaseAddress = new Uri(configuration["GraphUrl"]);
+    var httpClient = new HttpClient
+    {
+        BaseAddress = new Uri(configuration["GraphUrl"])
+    };
     // might need to renew token
     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration["GraphToken"]);
 
