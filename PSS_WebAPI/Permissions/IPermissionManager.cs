@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace OPAStyraWebAPI.Permissions
+namespace PSS_WebAPI.Permissions
 {
     public interface IPermissionManager
     {

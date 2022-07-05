@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using OPAStyraWebAPI.Permissions;
+using PSS_WebAPI.Permissions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
@@ -23,7 +23,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));
 
 services.AddAuthorization(o => o.AddPolicy("Customers", b => b.RequireRole("customer")
-                                 .AddRequirements(new PermissionRequirement("portfolio", "read"))));
+                                 .AddRequirements(new PermissionRequirement("position", "update"))));
 
 services.AddSwaggerGen(t =>
 {

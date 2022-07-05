@@ -1,4 +1,4 @@
-﻿namespace OPAStyraWebAPI.Permissions
+﻿namespace Insight.PermissionsDealer
 {
     public class RbacRequest
     {

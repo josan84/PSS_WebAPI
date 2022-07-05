@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Insight.PermissionsDealer;
 
-namespace OPAStyraWebAPI.Permissions
+namespace PSS_WebAPI.Permissions
 {
     public class PermissionManager : IPermissionManager
     {
@@ -22,9 +22,6 @@ namespace OPAStyraWebAPI.Permissions
             var scopeClaimUri = "http://schemas.microsoft.com/identity/claims/scope";
             var userScope = claimsPrincipal.FindFirstValue(scopeClaimUri).ToLower() ?? string.Empty;
 
-            // I might not need PermissionRequirement if I can get the scopes from the token; or 
-            // I could just check the permissions from the scope against PermissionRequirement and not needing OPA
-
             var rbacPermissionRequest = new RbacPermissionRequest
             {
                 Role = userRole.ToLower(),
@@ -38,27 +35,7 @@ namespace OPAStyraWebAPI.Permissions
                 Input = rbacPermissionRequest
             };
 
-            string? payload = JsonSerializer.Serialize(rbacRequest).ToLower();
-            //var httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
-
-            // var httpClient = _httpClientFactory.CreateClient("Opa");
-
-            //var httpResponseMessage = await httpClient.PostAsync("v1/data/rules/allow", httpContent);
-
-            //if (httpResponseMessage.IsSuccessStatusCode)
-            //{
-            //    var contentString = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            //    var options = new JsonSerializerOptions
-            //    {
-            //        PropertyNameCaseInsensitive = true
-            //    };
-
-            //    RbacResponse? resp = JsonSerializer.Deserialize<RbacResponse>(contentString, options);
-            //    return resp == null ? false : resp.Result;
-            //}
-
-            return PermissionAssistant.Allow(payload, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress).Result;
+            return PermissionAssistant.Allow(rbacRequest, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress).Result;
         }
     }
 }

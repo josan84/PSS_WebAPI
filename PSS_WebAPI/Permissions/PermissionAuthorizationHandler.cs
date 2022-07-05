@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace OPAStyraWebAPI.Permissions
+namespace PSS_WebAPI.Permissions
 {
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {
