@@ -2,23 +2,13 @@ using System.Net.Http.Headers;
 using Insight.PermissionsDealer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using PSS_WebAPI.Permissions;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-//var host = Host.CreateDefaultBuilder().ConfigureLogging(builder =>
-//{
-//    builder.AddApplicationInsights("5155123d-08bf-4619-83c3-113c19c8861e", opt => { });
-//    builder.AddFilter<ApplicationInsightsLoggerProvider>(typeof(Program).FullName, LogLevel.Trace);
-
-//});
-
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Logging.AddApplicationInsights("5155123d-08bf-4619-83c3-113c19c8861e");
 
 var services = builder.Services;
 var configuration = builder.Configuration;
