@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Insight.PermissionsDealer
 {
@@ -6,7 +7,7 @@ namespace Insight.PermissionsDealer
     {
         private RbacRequest _rbacRequest;
        
-        public async Task<bool> Allow(RbacRequest requestInput, Uri? url)
+        public async Task<bool> Allow(RbacRequest requestInput, Uri? url, ILogger logger)
         {
             _rbacRequest = requestInput;
 
@@ -23,18 +24,26 @@ namespace Insight.PermissionsDealer
 
                     List<DataSourceResponse>? responseDataItems = JsonSerializer.Deserialize<List<DataSourceResponse>>(dataSourceContent, options);
                     
-                    return responseDataItems == null ? false : responseDataItems.Exists(Match);
+                    if (responseDataItems != null && responseDataItems.Exists(Match))
+                    {
+                        logger.LogInformation("Allowed");
+                        return true;
+                    }
+
+                    logger.LogInformation("Not Allowed");
+                    return false;
                 }
             }
         }
 
         private bool Match(DataSourceResponse obj)
         {
-            if (_rbacRequest.Input.Role == obj.Role)
+            if (string.Equals(_rbacRequest.Input.Role, obj.Role, StringComparison.OrdinalIgnoreCase))
             {
                 foreach (var p in obj.Permissions)
                 {
-                    if (_rbacRequest.Input.Action == p.Action && _rbacRequest.Input.Resource == p.Resource)
+                    if (string.Equals(_rbacRequest.Input.Action, p.Action, StringComparison.OrdinalIgnoreCase)
+                         && string.Equals(_rbacRequest.Input.Resource, p.Resource, StringComparison.OrdinalIgnoreCase))
                         return true;
                 }
             }

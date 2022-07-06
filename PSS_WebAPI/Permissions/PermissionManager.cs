@@ -7,14 +7,20 @@ namespace PSS_WebAPI.Permissions
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IPermissionAssistant _permissionAssistant;
+        private readonly ILogger _logger;
 
-        public PermissionManager(IHttpClientFactory httpClientFactory, IPermissionAssistant permissionAssistant)
+        public PermissionManager(IHttpClientFactory httpClientFactory, IPermissionAssistant permissionAssistant, ILogger<PermissionManager> logger)
         {
             _httpClientFactory = httpClientFactory;
             _permissionAssistant = permissionAssistant;
+            _logger = logger;
+
+            _logger.LogInformation("Hello 1");
         }
         public async Task<bool> AssertPermissionRequirementAsync(PermissionRequirement permissionRequirement, ClaimsPrincipal claimsPrincipal)
         {
+            _logger.LogInformation("Asserting Permissions");
+
             var userName = claimsPrincipal.Identity != null ? claimsPrincipal.Identity.Name : string.Empty;
 
             var roleClaimUri = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
@@ -33,7 +39,7 @@ namespace PSS_WebAPI.Permissions
                 Input = rbacPermissionRequest
             };
 
-            return _permissionAssistant.Allow(rbacRequest, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress).Result;
+            return _permissionAssistant.Allow(rbacRequest, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress, _logger).Result;
         }
     }
 }
