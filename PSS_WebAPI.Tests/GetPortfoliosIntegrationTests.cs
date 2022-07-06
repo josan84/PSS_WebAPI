@@ -1,6 +1,6 @@
 namespace PSS_WebAPI.Tests
 {
-    public class UnitTest1
+    public class GetPortfoliosIntegrationTests
     {
         [Fact]
         public void Test1()
