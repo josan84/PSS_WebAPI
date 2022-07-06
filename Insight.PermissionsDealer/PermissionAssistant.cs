@@ -38,12 +38,12 @@ namespace Insight.PermissionsDealer
 
         private bool Match(DataSourceResponse obj)
         {
-            if (string.Equals(_rbacRequest.Input.Role, obj.Role, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(_rbacRequest.Role, obj.Role, StringComparison.OrdinalIgnoreCase))
             {
                 foreach (var p in obj.Permissions)
                 {
-                    if (string.Equals(_rbacRequest.Input.Action, p.Action, StringComparison.OrdinalIgnoreCase)
-                         && string.Equals(_rbacRequest.Input.Resource, p.Resource, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(_rbacRequest.Action, p.Action, StringComparison.OrdinalIgnoreCase)
+                         && string.Equals(_rbacRequest.Resource, p.Resource, StringComparison.OrdinalIgnoreCase))
                         return true;
                 }
             }

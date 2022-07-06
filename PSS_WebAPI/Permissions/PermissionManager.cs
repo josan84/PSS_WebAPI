@@ -24,19 +24,14 @@ namespace PSS_WebAPI.Permissions
             var userName = claimsPrincipal.Identity != null ? claimsPrincipal.Identity.Name : string.Empty;
 
             var roleClaimUri = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-            var userRole = claimsPrincipal.FindFirstValue(roleClaimUri).ToLower() ?? string.Empty;
-
-            var rbacPermissionRequest = new RbacPermissionRequest
-            {
-                Role = userRole.ToLower(),
-                User = userName != null ? userName.ToLower() : string.Empty,
-                Action = permissionRequirement.Action.ToLower(),
-                Resource = permissionRequirement.Resource.ToLower()
-            };
+            var userRole = claimsPrincipal.FindFirstValue(roleClaimUri) ?? string.Empty;
 
             var rbacRequest = new RbacRequest
             {
-                Input = rbacPermissionRequest
+                Role = userRole,
+                User = userName != null ? userName : string.Empty,
+                Action = permissionRequirement.Action,
+                Resource = permissionRequirement.Resource
             };
 
             return _permissionAssistant.Allow(rbacRequest, _httpClientFactory.CreateClient("DataSourceRepo").BaseAddress, _logger).Result;
