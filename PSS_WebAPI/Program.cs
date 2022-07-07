@@ -120,3 +120,5 @@ async () =>
 logger.LogInformation("Running PSS Web API");
 
 app.Run();
+
+public partial class Program { }

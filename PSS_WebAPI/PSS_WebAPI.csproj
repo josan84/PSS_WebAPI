@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Insight.PermissionsDealer\Insight.PermissionsDealer.csproj" />
+	<InternalsVisibleTo Include="PSS_WebAPI.Tests" />
   </ItemGroup>
 
 </Project>
